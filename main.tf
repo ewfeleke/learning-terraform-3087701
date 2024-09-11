@@ -44,17 +44,17 @@ module "blog_alb" {
       port     = 80
       protocol = "HTTP"
       forward = {
-        target_group = "blog-instance"
+        target_group = "ex-instance"
       }
       default_action = {
         type             = "forward"
-        target_group_key = "blog-instance"
+        target_group_key = "ex-instance"
       }
     }
   }
 
   target_groups = {
-    blog-instance = {
+    ex-instance = {
       name_prefix      = "blog-"
       protocol         = "HTTP"
       port             = 80
