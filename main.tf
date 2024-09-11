@@ -46,6 +46,10 @@ module "blog_alb" {
       forward = {
         target_group = "blog-instance"
       }
+      default_action = {
+        type             = "forward"
+        target_group_key = "blog-instance"
+      }
     }
   }
 
