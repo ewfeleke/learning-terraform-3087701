@@ -39,22 +39,37 @@ module "blog_alb" {
   subnets = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
-  target_groups = [
-    {
-      name_prefix      = "blog-"
-      protocol = "HTTP"
+  listeners = {
+    ex-http-https-redirect = {
       port     = 80
-      target_type      = "instance"
+      protocol = "HTTP"
+      redirect = {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
     }
-  ]
+    ex-https = {
+      port            = 443
+      protocol        = "HTTPS"
+      certificate_arn = "arn:aws:iam::123456789012:server-certificate/test_cert-123456789012"
 
-  listeners = [
-    {
-      port              = 80
-      protocol           = "HTTP"
-      target_group_index = 0
+      forward = {
+        target_group_key = "ex-instance"
+      }
     }
-  ]
+  }
+
+  target_groups = {
+    ex-instance = {
+      name_prefix      = "blog-"
+      protocol         = "HTTP"
+      port             = 80
+      target_type      = "instance"
+      target_id        = aws_instance.blog.id
+    }
+  }
+
   tags = {
     Terraform = "true"
     Environment = "dev"
