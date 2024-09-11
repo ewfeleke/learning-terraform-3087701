@@ -40,14 +40,17 @@ module "blog_alb" {
   security_groups = [module.blog_sg.security_group_id]
 
   listeners = {
-    ex-http-https-redirect = {
+    ex-http = {
       port     = 80
       protocol = "HTTP"
+      forward = {
+        target_group = "blog-instance"
+      }
     }
   }
 
   target_groups = {
-    ex-instance = {
+    blog-instance = {
       name_prefix      = "blog-"
       protocol         = "HTTP"
       port             = 80
