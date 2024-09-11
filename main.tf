@@ -47,8 +47,8 @@ module "blog_alb" {
         target_group = "ex-instance"
       }
       default_action = {
-        type             = "forward"
-        target_group_key = "ex-instance"
+        type              = "forward"
+        target_group_arn  = module.blog_alb.target_groups["ex-instance"].arn
       }
     }
   }
